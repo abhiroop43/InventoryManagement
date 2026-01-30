@@ -5,4 +5,7 @@ public enum QuantityType
     Count,
     Kilogram,
     Meters,
+    Liters,
+    SquareMeters,
+    CubicMeters
 }

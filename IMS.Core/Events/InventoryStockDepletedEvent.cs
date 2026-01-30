@@ -1,3 +1,3 @@
 namespace IMS.Core.Events;
 
-public record InventoryStockDepletedEvent(InventoryId InventoryId) : IDomainEvent;
+public record InventoryStockDepletedEvent(Guid InventoryId) : DomainEvent;

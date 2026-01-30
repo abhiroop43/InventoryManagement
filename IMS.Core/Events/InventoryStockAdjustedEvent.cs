@@ -1,4 +1,4 @@
 namespace IMS.Core.Events;
 
-public record InventoryStockAdjustedEvent(InventoryId InventoryId, decimal QuantityChanged, decimal NewQuantity)
-    : IDomainEvent;
+public record InventoryStockAdjustedEvent(Guid InventoryId, decimal QuantityChanged, decimal NewQuantity)
+    : DomainEvent;

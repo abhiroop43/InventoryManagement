@@ -1,6 +1,6 @@
 namespace IMS.Core.Abstractions;
 
-public class Aggregate<TId> : Entity<TId>, IAggregate<TId>
+public abstract class Aggregate<TId> : Entity<TId>, IAggregate<TId>
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 

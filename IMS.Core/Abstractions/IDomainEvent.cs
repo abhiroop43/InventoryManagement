@@ -4,7 +4,7 @@ namespace IMS.Core.Abstractions;
 
 public interface IDomainEvent : INotification
 {
-    Guid EventId => Guid.NewGuid();
-    public DateTime OccurredOn => DateTime.UtcNow;
-    public string? EventType => GetType().Name;
+    Guid EventId { get; }
+    DateTime OccurredOn { get; }
+    string? EventType { get; }
 }

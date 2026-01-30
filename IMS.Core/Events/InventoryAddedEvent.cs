@@ -1,3 +1,8 @@
 namespace IMS.Core.Events;
 
-public record InventoryAddedEvent(Inventory Inventory) : IDomainEvent;
+public record InventoryAddedEvent(
+    Guid InventoryId,
+    string InventoryName,
+    decimal Quantity,
+    QuantityType QuantityType,
+    decimal Price) : DomainEvent;

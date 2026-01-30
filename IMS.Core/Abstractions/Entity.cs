@@ -1,6 +1,6 @@
 namespace IMS.Core.Abstractions;
 
-public class Entity<T> : IEntity<T>
+public abstract class Entity<T> : IEntity<T>
 {
     public string? CreatedBy { get; set; }
     public DateTime? CreatedDate { get; set; }
