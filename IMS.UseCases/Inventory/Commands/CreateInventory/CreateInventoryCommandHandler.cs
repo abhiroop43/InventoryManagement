@@ -1,5 +1,21 @@
+using IMS.UseCases.Data;
+
 namespace IMS.UseCases.Inventory.Commands.CreateInventory;
 
-public class CreateInventoryCommandHandler
+public class CreateInventoryCommandHandler(
+    IApplicationDbContext dbContext,
+    ILogger<CreateInventoryCommandHandler> logger
+) : ICommandHandler<CreateInventoryCommand, CreateInventoryResult>
 {
+    public async Task<CreateInventoryResult> Handle(
+        CreateInventoryCommand request,
+        CancellationToken cancellationToken
+    )
+    {
+        var inventory = request.Inventory.Adapt<Core.Models.Inventory>();
+        dbContext.Inventories.Add(inventory);
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new CreateInventoryResult(inventory.Id.Value);
+    }
 }
