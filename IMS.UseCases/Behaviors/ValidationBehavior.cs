@@ -1,11 +1,10 @@
-﻿using FluentValidation;
-
-namespace IMS.UseCases.Behaviors;
+﻿namespace IMS.UseCases.Behaviors;
 
 public class ValidationBehavior<TRequest, TResponse>(
     IEnumerable<IValidator<TRequest>> validators,
     ILogger<ValidationBehavior<TRequest, TResponse>> logger
 ) : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : ICommand<TResponse>
 {
     public async Task<TResponse> Handle(
         TRequest request,
@@ -24,9 +23,7 @@ public class ValidationBehavior<TRequest, TResponse>(
             .ToList();
 
         if (failures.Count == 0)
-        {
             return await next(cancellationToken);
-        }
 
         logger.LogWarning("Validation failed for {0}", nameof(request));
         throw new ValidationException(failures);

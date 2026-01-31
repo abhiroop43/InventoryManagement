@@ -2,10 +2,8 @@ using IMS.UseCases.Data;
 
 namespace IMS.UseCases.Inventory.Commands.CreateInventory;
 
-public class CreateInventoryCommandHandler(
-    IApplicationDbContext dbContext,
-    ILogger<CreateInventoryCommandHandler> logger
-) : ICommandHandler<CreateInventoryCommand, CreateInventoryResult>
+public class CreateInventoryCommandHandler(IApplicationDbContext dbContext)
+    : ICommandHandler<CreateInventoryCommand, CreateInventoryResult>
 {
     public async Task<CreateInventoryResult> Handle(
         CreateInventoryCommand request,
