@@ -1,5 +1,3 @@
-using IMS.Core.Enums;
-
 namespace IMS.UseCases.Dtos;
 
 public record InventoryDto(
@@ -11,4 +9,5 @@ public record InventoryDto(
     string CreatedBy,
     DateTime CreatedDate,
     string UpdatedBy,
-    DateTime UpdatedDate);
+    DateTime UpdatedDate
+);
