@@ -1,5 +1,10 @@
-﻿namespace IMS.Infrastructure;
-
-public class Class1
-{
-}
+﻿global using IMS.Core.Abstractions;
+global using IMS.Core.Models;
+global using IMS.Infrastructure.Data;
+global using IMS.Infrastructure.Data.Extensions;
+global using IMS.Infrastructure.Data.Interceptors;
+global using IMS.UseCases.Data;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;

@@ -1,3 +1,40 @@
-﻿namespace IMS.Infrastructure.Data.Configurations;
+﻿using IMS.Core.Enums;
+using IMS.Core.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-public class InventoryConfiguration { }
+namespace IMS.Infrastructure.Data.Configurations;
+
+public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
+{
+    public void Configure(EntityTypeBuilder<Inventory> builder)
+    {
+        builder.HasKey(x => x.Id);
+
+        builder.Property(x => x.Id).HasConversion(inv => inv.Value, val => InventoryId.Of(val));
+
+        builder.Property(x => x.Price).HasColumnType("decimal(18,2)");
+        builder.Property(x => x.Quantity).HasColumnType("decimal(18,2)");
+
+        builder.ComplexProperty(
+            x => x.InventoryName,
+            nameBuilder =>
+            {
+                nameBuilder
+                    .Property(x => x.Value)
+                    .HasColumnName(nameof(Inventory.InventoryName))
+                    .HasMaxLength(100)
+                    .IsRequired();
+            }
+        );
+
+        builder.HasIndex(x => x.InventoryName).IsUnique();
+
+        builder
+            .Property(x => x.QuantityType)
+            .HasDefaultValue(QuantityType.Count)
+            .HasConversion(
+                qType => qType.ToString(),
+                dbQType => (QuantityType)Enum.Parse(typeof(QuantityType), dbQType)
+            );
+    }
+}
