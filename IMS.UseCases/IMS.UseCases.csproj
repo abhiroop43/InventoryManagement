@@ -1,18 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-    </PropertyGroup>
-    <ItemGroup>
-        <PackageReference Include="DotNetEnv" Version="3.1.1" />
-        <PackageReference Include="FluentValidation" Version="12.1.1" />
-        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-        <PackageReference Include="Mapster" Version="7.4.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
-    </ItemGroup>
-    <ItemGroup>
-        <ProjectReference Include="..\IMS.Core\IMS.Core.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
+    <PackageReference
+      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="10.0.2"
+    />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IMS.Core\IMS.Core.csproj" />
+  </ItemGroup>
 </Project>

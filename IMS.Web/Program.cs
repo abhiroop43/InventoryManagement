@@ -1,10 +1,17 @@
+using IMS.Infrastructure;
+using IMS.UseCases;
+using IMS.Web;
 using IMS.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder
+    .Services.AddUseCaseServices(builder.Configuration)
+    .AddInfrastructureServices(builder.Configuration)
+    .AddWebServices();
+
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 var app = builder.Build();
 
@@ -22,7 +29,6 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();
