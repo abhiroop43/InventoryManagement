@@ -16,18 +16,16 @@ public class InventoryConfiguration : IEntityTypeConfiguration<Inventory>
         builder.Property(x => x.Quantity).HasColumnType("decimal(18,2)");
 
         builder.ComplexProperty(
-            x => x.InventoryName,
+            x => x.ItemName,
             nameBuilder =>
             {
                 nameBuilder
                     .Property(x => x.Value)
-                    .HasColumnName(nameof(Inventory.InventoryName))
+                    .HasColumnName(nameof(Inventory.ItemName))
                     .HasMaxLength(100)
                     .IsRequired();
             }
         );
-
-        builder.HasIndex(x => x.InventoryName).IsUnique();
 
         builder
             .Property(x => x.QuantityType)

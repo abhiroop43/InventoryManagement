@@ -1,0 +1,15 @@
+﻿@page "/inventory"
+@using IMS.Core.Pagination
+@using IMS.UseCases.Dtos
+@using IMS.UseCases.Inventory.Queries.GetInventories
+<h3>Inventory List</h3>
+
+@code {
+    private List<InventoryDto> _inventories;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+}

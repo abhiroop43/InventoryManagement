@@ -1,4 +1,5 @@
 using IMS.Infrastructure;
+using IMS.Infrastructure.Data.Extensions;
 using IMS.UseCases;
 using IMS.Web;
 using IMS.Web.Components;
@@ -30,5 +31,10 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+
+if (app.Environment.IsDevelopment())
+{
+    await app.InitializeDatabaseAsync();
+}
 
 await app.RunAsync();
