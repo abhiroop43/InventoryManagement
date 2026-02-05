@@ -1,15 +1,71 @@
 ﻿@page "/inventory"
-@using IMS.Core.Pagination
+@using System.Globalization
 @using IMS.UseCases.Dtos
-@using IMS.UseCases.Inventory.Queries.GetInventories
+@using IMS.Web.Clients
+
+@inject InventoriesClient InventoriesClient
+@attribute [StreamRendering]
+
 <h3>Inventory List</h3>
+<div class="container">
+    @if (_inventories is null)
+    {
+        <p>No inventory records found</p>
+    }
+    else
+    {
+        <table class="table table-striped table-responsive table-hover">
+            <thead class="table-dark">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Price
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var inventory in _inventories)
+            {
+                <tr>
+                    <td>@inventory.InventoryName</td>
+                    <td>@inventory.Quantity</td>
+                    <td>@inventory.QuantityType.ToString()</td>
+                    <td>@inventory.Price.ToString(CultureInfo.CurrentCulture)</td>
+                    <td style="width: 150px" class="text-center">
+                        <button class="btn btn-link"><i class="bi bi-pencil-fill text-success"></i></button>
+                        <button class="btn btn-link"><i class="bi bi-trash3-fill text-danger"></i></button>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+</div>
+
+
 
 @code {
-    private List<InventoryDto> _inventories;
+    private InventoryDto[]? _inventories;
+    private int _currentPage, _pageSize;
+    private long _totalRecords;
 
-    protected override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+        var result = await InventoriesClient.GetInventories();
+        _inventories = result.Items.ToArray();
+        _currentPage = result.PageIndex;
+        _pageSize = result.PageSize;
+        _totalRecords = result.Count;
+        await base.OnInitializedAsync();
     }
 
 }

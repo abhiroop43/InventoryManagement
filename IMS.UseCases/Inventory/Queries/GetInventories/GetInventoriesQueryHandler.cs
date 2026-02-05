@@ -20,6 +20,11 @@ public class GetInventoriesQueryHandler(IApplicationDbContext dbContext)
             .Take(request.PaginationRequest.PageSize)
             .ToListAsync(cancellationToken);
 
+        TypeAdapterConfig<Core.Models.Inventory, InventoryDto>
+            .NewConfig()
+            .Map(dest => dest.InventoryName, src => src.ItemName.Value)
+            .Map(dest => dest.InventoryId, src => src.Id.Value);
+
         var mappedInventories = inventories.Adapt<List<InventoryDto>>();
 
         var paginatedInventories = new PaginatedResult<InventoryDto>(
