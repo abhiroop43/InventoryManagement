@@ -1,12 +1,20 @@
 ﻿@page "/inventory"
-@using System.Globalization
-@using IMS.UseCases.Dtos
-@using IMS.Web.Clients
 
 @inject InventoriesClient InventoriesClient
+@inject NavigationManager NavigationManager
+
+@rendermode InteractiveServer
 @attribute [StreamRendering]
 
-<h3>Inventory List</h3>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+        <h3>Inventory List</h3>
+        <button class="btn btn-primary" @onclick="RedirectToForm">
+            <i class="bi bi-plus-lg"></i>
+            Add Inventory
+        </button>
+    </div>
+</div>
 <div class="container">
     @if (_inventories is null)
     {
@@ -14,7 +22,7 @@
     }
     else
     {
-        <table class="table table-striped table-responsive table-hover">
+        <table class="table table-bordered table-striped table-responsive table-hover mt-5">
             <thead class="table-dark">
             <tr>
                 <th>
@@ -35,19 +43,29 @@
             <tbody>
             @foreach (var inventory in _inventories)
             {
-                <tr>
-                    <td>@inventory.InventoryName</td>
-                    <td>@inventory.Quantity</td>
-                    <td>@inventory.QuantityType.ToString()</td>
-                    <td>@inventory.Price.ToString(CultureInfo.CurrentCulture)</td>
-                    <td style="width: 150px" class="text-center">
-                        <button class="btn btn-link"><i class="bi bi-pencil-fill text-success"></i></button>
-                        <button class="btn btn-link"><i class="bi bi-trash3-fill text-danger"></i></button>
-                    </td>
-                </tr>
+                <InventoryListItem Inventory="inventory"/>
             }
             </tbody>
         </table>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                @for (var i = 1; i <= _pagesCount; i++)
+                {
+                    <li class="page-item @(i == 1 ? "disabled" : "")">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item @(_currentPage == i ? "active" : "")"><a class="page-link" href="#">@i</a></li>
+                    <li class="page-item @(i == _pagesCount ? "disabled" : "")">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </nav>
     }
 </div>
 
@@ -55,17 +73,26 @@
 
 @code {
     private InventoryDto[]? _inventories;
-    private int _currentPage, _pageSize;
-    private long _totalRecords;
+    private int _currentPage = 1, _pageSize = 10;
+    private long _pagesCount, _totalRecords;
 
     protected override async Task OnInitializedAsync()
     {
-        var result = await InventoriesClient.GetInventories();
-        _inventories = result.Items.ToArray();
-        _currentPage = result.PageIndex;
-        _pageSize = result.PageSize;
-        _totalRecords = result.Count;
+        await GetListData(_currentPage - 1, _pageSize);
         await base.OnInitializedAsync();
     }
+
+    private async Task GetListData(int pageIndex, int pageSize)
+    {
+        Console.WriteLine($"Fetching inventories for page {pageIndex + 1} with size {pageSize}");
+        var result = await InventoriesClient.GetInventories(pageIndex, pageSize);
+        _inventories = result.Items.ToArray();
+        _currentPage = result.PageIndex + 1;
+        _pageSize = result.PageSize;
+        _totalRecords = result.Count;
+        _pagesCount = (int)Math.Ceiling((double)_totalRecords / _pageSize);
+    }
+
+    private void RedirectToForm() => NavigationManager.NavigateTo("/inventory/create");
 
 }

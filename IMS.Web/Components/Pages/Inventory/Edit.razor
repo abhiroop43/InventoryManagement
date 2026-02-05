@@ -1,0 +1,17 @@
+﻿@page "/inventory/create"
+@page "/inventory/edit/{inventoryId:guid}"
+
+@if (InventoryId == null)
+{
+    <h3>Add Inventory</h3>
+}
+else
+{
+    <h3>Edit Inventory: @InventoryId</h3>
+}
+
+<div class="container"></div>
+
+@code {
+    [Parameter] public Guid? InventoryId { get; set; }
+}
