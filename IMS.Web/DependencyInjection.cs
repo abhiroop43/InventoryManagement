@@ -7,23 +7,33 @@ namespace IMS.Web;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddWebServices(this IServiceCollection services)
+    public static IServiceCollection AddWebServices(
+        this IServiceCollection services,
+        IConfiguration configuration
+    )
     {
         services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddScoped<InventoriesClient>();
 
+        // services
+        //     .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+        //     .AddMicrosoftIdentityWebApp(msIdentityOptions =>
+        //     {
+        //         msIdentityOptions.CallbackPath = "/signin-oidc";
+        //         msIdentityOptions.Authority =
+        //             "https://abhiroopsantragmail.onmicrosoft.com.ciamlogin.com/fd8b1160-6283-419e-b032-bec26d815619/v2.0";
+        //         msIdentityOptions.ClientId = "c2ffbd0a-6bda-4f3c-9bbb-da550dc553e9";
+        //         msIdentityOptions.ResponseType = "code";
+        //     });
+        //
+        // services.AddAuthorization();
+
         services
             .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-            .AddMicrosoftIdentityWebApp(msIdentityOptions =>
-            {
-                msIdentityOptions.CallbackPath = "/signin-oidc";
-                msIdentityOptions.Authority =
-                    "https://abhiroopsantragmail.onmicrosoft.com.ciamlogin.com/fd8b1160-6283-419e-b032-bec26d815619/v2.0";
-                msIdentityOptions.ClientId = "c2ffbd0a-6bda-4f3c-9bbb-da550dc553e9";
-                msIdentityOptions.ResponseType = "code";
-            });
+            .AddMicrosoftIdentityWebApp(configuration)
+            .EnableTokenAcquisitionToCallDownstreamApi()
+            .AddInMemoryTokenCaches();
 
-        services.AddAuthorization();
         services.AddCascadingAuthenticationState();
 
         return services;

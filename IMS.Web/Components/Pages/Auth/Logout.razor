@@ -1,0 +1,12 @@
+﻿@page "/logout"
+
+@inject NavigationManager NavigationManager
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}

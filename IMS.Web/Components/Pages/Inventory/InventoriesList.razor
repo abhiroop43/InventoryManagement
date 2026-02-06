@@ -1,4 +1,5 @@
 ﻿@page "/inventory"
+@attribute [Authorize]
 
 @inject InventoriesClient InventoriesClient
 @inject NavigationManager NavigationManager
@@ -93,6 +94,9 @@
         _pagesCount = (int)Math.Ceiling((double)_totalRecords / _pageSize);
     }
 
-    private void RedirectToForm() => NavigationManager.NavigateTo("/inventory/create");
+    private void RedirectToForm()
+    {
+        NavigationManager.NavigateTo("/inventory/create");
+    }
 
 }
