@@ -9,12 +9,21 @@
         <button type="button" class="btn btn-link" @onclick="() => NavigateToEditPage(Inventory.InventoryId)">
             <i class="bi bi-pencil-fill text-success"></i>
         </button>
-        <button class="btn btn-link"><i class="bi bi-trash3-fill text-danger"></i></button>
+        <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#deleteModal-@Inventory.InventoryId">
+            <i class="bi bi-trash3-fill text-danger"></i>
+        </button>
     </td>
 </tr>
+
+<ConfirmDelete Inventory="Inventory"></ConfirmDelete>
+
 
 @code {
     [Parameter] public required InventoryDto Inventory { get; set; }
 
-    private void NavigateToEditPage(Guid inventoryId) => NavigationManager.NavigateTo($"/inventory/edit/{inventoryId}");
+    private void NavigateToEditPage(Guid inventoryId)
+    {
+        NavigationManager.NavigateTo($"/inventory/edit/{inventoryId}");
+    }
+
 }
