@@ -7,3 +7,4 @@ riderModule.iml
 .vs/
 *.csproj.user
 .env
+.DS_Store
