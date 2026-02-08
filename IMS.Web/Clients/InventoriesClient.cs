@@ -1,5 +1,6 @@
 ﻿using IMS.Core.Pagination;
 using IMS.UseCases.Dtos;
+using IMS.UseCases.Inventory.Commands.DeleteInventory;
 using IMS.UseCases.Inventory.Queries.GetInventories;
 using MediatR;
 
@@ -12,5 +13,12 @@ public class InventoriesClient(ISender sender)
         var query = new GetInventoriesQuery(new PaginationRequest(pageIndex, pageSize));
         var result = await sender.Send(query);
         return result.Inventories;
+    }
+
+    public async Task<bool> DeleteInventoryById(Guid inventoryId)
+    {
+        var command = new DeleteInventoryCommand(inventoryId);
+        var result = await sender.Send(command);
+        return result.Success;
     }
 }

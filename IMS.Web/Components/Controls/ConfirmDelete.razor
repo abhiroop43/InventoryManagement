@@ -1,4 +1,6 @@
-﻿<div class="modal fade" id="deleteModal-@Inventory.InventoryId" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+﻿@inject InventoriesClient InventoriesClient
+
+<div class="modal fade" id="deleteModal-@Inventory.InventoryId" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
      aria-hidden="true">
     <div class="modal-dialog p-0">
         <div class="modal-content">
@@ -11,7 +13,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="DeleteInventory">Delete
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="DeleteInventoryAsync">
+                    Delete
                 </button>
             </div>
         </div>
@@ -20,10 +23,13 @@
 
 @code {
     [Parameter] public required InventoryDto Inventory { get; set; }
+    [Parameter] public EventCallback OnParentReloadRequested { get; set; }
 
-    private void DeleteInventory()
+    private async Task DeleteInventoryAsync()
     {
-        Console.WriteLine($"Deleting Inventory: {Inventory.InventoryId}");
+        await InventoriesClient.DeleteInventoryById(Inventory.InventoryId);
+        // NavigationManager.NavigateTo("/inventory", forceLoad:true); // causes full page reload
+        await OnParentReloadRequested.InvokeAsync();
     }
 
 }

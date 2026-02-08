@@ -44,7 +44,7 @@
             <tbody>
             @foreach (var inventory in _inventories)
             {
-                <InventoryListItem Inventory="inventory"/>
+                    <InventoryListItem Inventory="inventory" OnParentReloadRequested="@ReloadParent" />
             }
             </tbody>
         </table>
@@ -97,6 +97,12 @@
     private void RedirectToForm()
     {
         NavigationManager.NavigateTo("/inventory/create");
+    }
+
+    private async Task ReloadParent()
+    {
+        await GetListData(_currentPage - 1, _pageSize);
+        StateHasChanged();
     }
 
 }
