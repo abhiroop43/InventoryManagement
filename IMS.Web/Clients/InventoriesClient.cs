@@ -1,6 +1,8 @@
 ﻿using IMS.Core.Pagination;
 using IMS.UseCases.Dtos;
+using IMS.UseCases.Inventory.Commands.CreateInventory;
 using IMS.UseCases.Inventory.Commands.DeleteInventory;
+using IMS.UseCases.Inventory.Commands.UpdateInventory;
 using IMS.UseCases.Inventory.Queries.GetInventories;
 using MediatR;
 
@@ -13,6 +15,20 @@ public class InventoriesClient(ISender sender)
         var query = new GetInventoriesQuery(new PaginationRequest(pageIndex, pageSize));
         var result = await sender.Send(query);
         return result.Inventories;
+    }
+
+    public async Task<Guid> AddNewInventory(InventoryDto inventory)
+    {
+        var command = new CreateInventoryCommand(inventory);
+        var result = await sender.Send(command);
+        return result.Id;
+    }
+
+    public async Task<Guid> UpdateExistingInventory(InventoryDto inventory)
+    {
+        var command = new UpdateInventoryCommand(inventory);
+        var result = await sender.Send(command);
+        return result.Id;
     }
 
     public async Task<bool> DeleteInventoryById(Guid inventoryId)
