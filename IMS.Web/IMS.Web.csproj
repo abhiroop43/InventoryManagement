@@ -17,7 +17,4 @@
     <PackageReference Include="Microsoft.Identity.Web" Version="4.3.0" />
     <PackageReference Include="Microsoft.Identity.Web.UI" Version="4.3.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\Controls\" />
-  </ItemGroup>
 </Project>

@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11217.181 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Web", "IMS.Web\IMS.Web.csproj", "{7AEC7966-8B72-414E-A45A-67D1FA260620}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IMS.Core", "IMS.Core\IMS.Core.csproj", "{D1CBE9DF-8333-43CE-9F3C-B4709AA3EA74}"
@@ -30,5 +33,8 @@ Global
 		{9C2E26A7-7FBE-4AE5-8E77-239809DC3768}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C2E26A7-7FBE-4AE5-8E77-239809DC3768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C2E26A7-7FBE-4AE5-8E77-239809DC3768}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
