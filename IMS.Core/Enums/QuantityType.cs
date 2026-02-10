@@ -7,5 +7,5 @@ public enum QuantityType
     Meters,
     Liters,
     SquareMeters,
-    CubicMeters
+    CubicMeters,
 }

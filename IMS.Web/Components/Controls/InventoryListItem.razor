@@ -1,4 +1,4 @@
-﻿                                                            @using System.Globalization
+﻿@using System.Globalization
 @inject NavigationManager NavigationManager
 @inject InventoriesClient InventoriesClient
 
@@ -16,8 +16,6 @@
         </button>
     </td>
 </tr>
-
-@* <ConfirmDelete Inventory="Inventory" OnParentReloadRequested="OnParentReloadRequested"></ConfirmDelete> *@
 
 <div class="modal fade" id="deleteModal-@Inventory.InventoryId" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
      aria-hidden="true">

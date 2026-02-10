@@ -5,7 +5,9 @@
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
-@attribute [StreamRendering]
+@* @attribute [StreamRendering] *@
+
+<PageTitle>All Inventories</PageTitle>
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center">
@@ -25,27 +27,27 @@
     {
         <table class="table table-bordered table-striped table-responsive table-hover mt-5">
             <thead class="table-dark">
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Quantity
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Price
-                </th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Quantity
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var inventory in _inventories)
-            {
+                @foreach (var inventory in _inventories)
+                {
                     <InventoryListItem Inventory="inventory" OnParentReloadRequested="@ReloadParent" />
-            }
+                }
             </tbody>
         </table>
         <nav aria-label="Page navigation example">

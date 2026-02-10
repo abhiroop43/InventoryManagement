@@ -1,4 +1,5 @@
-﻿using IMS.Core.Pagination;
+﻿using IMS.Core.Enums;
+using IMS.Core.Pagination;
 using IMS.UseCases.Dtos;
 using IMS.UseCases.Inventory.Commands.CreateInventory;
 using IMS.UseCases.Inventory.Commands.DeleteInventory;
@@ -36,5 +37,10 @@ public class InventoriesClient(ISender sender)
         var command = new DeleteInventoryCommand(inventoryId);
         var result = await sender.Send(command);
         return result.Success;
+    }
+
+    public static string[] GetQuantityTypes()
+    {
+        return Enum.GetNames<QuantityType>();
     }
 }
