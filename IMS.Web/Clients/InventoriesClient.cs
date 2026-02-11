@@ -5,6 +5,7 @@ using IMS.UseCases.Inventory.Commands.CreateInventory;
 using IMS.UseCases.Inventory.Commands.DeleteInventory;
 using IMS.UseCases.Inventory.Commands.UpdateInventory;
 using IMS.UseCases.Inventory.Queries.GetInventories;
+using IMS.UseCases.Inventory.Queries.GetInventoryDetails;
 using MediatR;
 
 namespace IMS.Web.Clients;
@@ -37,6 +38,13 @@ public class InventoriesClient(ISender sender)
         var command = new DeleteInventoryCommand(inventoryId);
         var result = await sender.Send(command);
         return result.Success;
+    }
+
+    public async Task<InventoryDto> GetInventoryById(Guid inventoryId)
+    {
+        var query = new GetInventoryDetailsQuery(inventoryId);
+        var result = await sender.Send(query);
+        return result.Inventory;
     }
 
     public static string[] GetQuantityTypes()

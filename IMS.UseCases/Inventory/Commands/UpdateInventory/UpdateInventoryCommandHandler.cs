@@ -1,5 +1,7 @@
-﻿using IMS.UseCases.Data;
+﻿using IMS.Core.ValueObjects;
+using IMS.UseCases.Data;
 using IMS.UseCases.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace IMS.UseCases.Inventory.Commands.UpdateInventory;
 
@@ -11,10 +13,12 @@ public class UpdateInventoryCommandHandler(IApplicationDbContext dbContext)
         CancellationToken cancellationToken
     )
     {
-        var currentInventory = await dbContext.Inventories.FindAsync(
-            [command.Inventory.InventoryId],
-            cancellationToken: cancellationToken
-        );
+        var currentInventory = await dbContext
+            .Inventories.AsNoTracking()
+            .FirstOrDefaultAsync(
+                x => x.Id == InventoryId.Of(command.Inventory.InventoryId),
+                cancellationToken
+            );
 
         if (currentInventory == null)
         {

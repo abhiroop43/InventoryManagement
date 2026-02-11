@@ -8,7 +8,7 @@ public class GetInventoriesQueryHandler(IApplicationDbContext dbContext)
     : IQueryHandler<GetInventoriesQuery, GetInventoriesQueryResult>
 {
     public async Task<GetInventoriesQueryResult> Handle(
-        GetInventoriesQuery request,
+        GetInventoriesQuery query,
         CancellationToken cancellationToken
     )
     {
@@ -16,8 +16,8 @@ public class GetInventoriesQueryHandler(IApplicationDbContext dbContext)
         var inventories = await dbContext
             .Inventories.AsNoTracking()
             .OrderByDescending(x => x.UpdatedDate)
-            .Skip(request.PaginationRequest.PageIndex * request.PaginationRequest.PageSize)
-            .Take(request.PaginationRequest.PageSize)
+            .Skip(query.PaginationRequest.PageIndex * query.PaginationRequest.PageSize)
+            .Take(query.PaginationRequest.PageSize)
             .ToListAsync(cancellationToken);
 
         TypeAdapterConfig<Core.Models.Inventory, InventoryDto>
@@ -28,8 +28,8 @@ public class GetInventoriesQueryHandler(IApplicationDbContext dbContext)
         var mappedInventories = inventories.Adapt<List<InventoryDto>>();
 
         var paginatedInventories = new PaginatedResult<InventoryDto>(
-            request.PaginationRequest.PageIndex,
-            request.PaginationRequest.PageSize,
+            query.PaginationRequest.PageIndex,
+            query.PaginationRequest.PageSize,
             totalInventory,
             mappedInventories
         );

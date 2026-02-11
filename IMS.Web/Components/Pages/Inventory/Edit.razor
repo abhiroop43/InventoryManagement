@@ -1,64 +1,76 @@
 ﻿@page "/inventory/create"
 @page "/inventory/edit/{inventoryId:guid}"
+@using IMS.Core.Enums
 
 @rendermode InteractiveServer
 @inject InventoriesClient InventoriesClient
 @inject NavigationManager NavigationManager
 
-@if (InventoryId == null)
+<PageTitle>@Title</PageTitle>
+<h3>@Title</h3>
+
+
+@if (_quantityTypes is null || Inventory is null)
 {
-    <h3>Add Inventory</h3>
-    <PageTitle>Add Inventory</PageTitle>
+    <div>Loading...</div>
 }
 else
 {
-    <h3>Edit Inventory: @InventoryId</h3>
-    <PageTitle>Edit Inventory</PageTitle>
-}
-
-<EditForm Model="@Inventory" OnValidSubmit="HandleSubmitAsync" FormName="EditInventory" class="row" Enhance>
-    <div class="col-md-4"></div>
-    <div class="col-md-4">
-        <div class="mb-3">
-            <label for="inventoryName" class="form-label">Inventory Name</label>
-            <input type="text" class="form-control" id="inventoryName" aria-describedby="inventoryNameHelp">
-            <div id="inventoryNameHelp" class="form-text">Please provide a valid inventory name</div>
+    <EditForm Model="@Inventory" OnValidSubmit="HandleSubmitAsync" FormName="EditInventory" Enhance>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <DataAnnotationsValidator/>
+            </div>
+            <div class="col-md-4"></div>
         </div>
-        <div class="mb-3">
-            <label for="quantity" class="form-label">Quantity</label>
-            <input type="number" class="form-control" id="quantity" aria-describedby="quantityHelp">
-            <div id="quantityHelp" class="form-text">Please provide a quantity greater than 0</div>
-        </div>
-        <div class="mb-3">
-            <label for="quantityType" class="form-label">Type</label>
-            <select id="quantityType" class="form-select form-select mb-3" aria-label="Quantity Type">
-                <option selected disabled>Please Select</option>
-                @if (QuantityTypes != null)
-                {
-                    @foreach (var quant in QuantityTypes)
-                    {
-                        <option value="@quant.ToUpper()">@quant</option>
-                    }
-                }
-            </select>
-            <div id="quantityTypeHelp" class="form-text">Please select a type</div>
-        </div>
-        <div class="mb-3">
-            <label for="price" class="form-label">Price</label>
-            <input type="number" class="form-control" id="price" aria-describedby="priceHelp">
-            <div id="priceHelp" class="form-text">Please provide a price greater than 0</div>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="inventoryName" class="form-label">Inventory Name</label>
+                    <InputText type="text" class="form-control" id="inventoryName"
+                               @bind-value="Inventory.InventoryName"/>
+                </div>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity</label>
+                    <InputNumber class="form-control" id="quantity" @bind-value="Inventory.Quantity"/>
+                </div>
+                <div class="mb-3">
+                    <label for="quantityType" class="form-label">Type</label>
+                    <InputSelect TValue="QuantityType" id="quantityType" class="form-select form-select mb-3"
+                                 @bind-Value="Inventory.QuantityType">
+                        <option value="" disabled>Please Select</option>
+                        @foreach (var quant in _quantityTypes)
+                        {
+                            <option value="@quant">@quant</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <InputNumber class="form-control" id="price" @bind-Value="Inventory.Price"/>
+                </div>
+                <div>
+                    <ValidationSummary/>
+                </div>
+            </div>
+            <div class="col-md-4"></div>
         </div>
         <div class="d-flex justify-content-center">
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-    </div>
-    <div class="col-md-4"></div>
-</EditForm>
+    </EditForm>
+}
+
+
 
 @code {
     [Parameter] public Guid? InventoryId { get; set; }
 
-    private string[]? QuantityTypes;
+    private string[]? _quantityTypes;
+
+    public string? Title { get; set; }
 
     [SupplyParameterFromForm] private InventoryDto? Inventory { get; set; }
 
@@ -68,9 +80,26 @@ else
         base.OnInitialized();
     }
 
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Inventory is not null) return;
+
+        if (InventoryId is not null)
+        {
+            Inventory = await InventoriesClient.GetInventoryById(InventoryId.Value);
+            Title = $"Edit Inventory {InventoryId.Value}";
+            Console.WriteLine(Inventory.QuantityType.ToString());
+        }
+        else
+        {
+            Inventory = new InventoryDto();
+            Title = "Add New Inventory";
+        }
+    }
+
     private void GetQuantityTypes()
     {
-        QuantityTypes = InventoriesClient.GetQuantityTypes();
+        _quantityTypes = InventoriesClient.GetQuantityTypes();
     }
 
     private async Task HandleSubmitAsync()
