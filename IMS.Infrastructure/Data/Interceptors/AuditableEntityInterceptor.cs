@@ -1,6 +1,9 @@
-﻿namespace IMS.Infrastructure.Data.Interceptors;
+﻿using Microsoft.AspNetCore.Http;
 
-public class AuditableEntityInterceptor : SaveChangesInterceptor
+namespace IMS.Infrastructure.Data.Interceptors;
+
+public class AuditableEntityInterceptor(IHttpContextAccessor httpContextAccessor)
+    : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(
         DbContextEventData eventData,
@@ -21,17 +24,24 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private static void UpdateEntities(DbContext? dbContext)
+    private void UpdateEntities(DbContext? dbContext)
     {
         if (dbContext == null)
             return;
+
+        var user = httpContextAccessor.HttpContext?.User;
+        var username =
+            user?.Identity?.Name
+            ?? user?.FindFirst("preferred_username")?.Value
+            ?? user?.FindFirst("email")?.Value
+            ?? "System";
 
         foreach (var entry in dbContext.ChangeTracker.Entries<IEntity>())
         {
             if (entry.State == EntityState.Added)
             {
                 entry.Entity.CreatedDate = DateTime.UtcNow;
-                entry.Entity.CreatedBy = "System";
+                entry.Entity.CreatedBy = username;
             }
 
             if (
@@ -41,7 +51,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
             )
                 continue;
             entry.Entity.UpdatedDate = DateTime.UtcNow;
-            entry.Entity.UpdatedBy = "System";
+            entry.Entity.UpdatedBy = username;
         }
     }
 }
