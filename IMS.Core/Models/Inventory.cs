@@ -2,8 +2,6 @@ namespace IMS.Core.Models;
 
 public class Inventory : Aggregate<InventoryId>
 {
-    private Inventory() { }
-
     public InventoryName ItemName { get; private set; } = null!;
     public decimal Quantity { get; private set; }
     public QuantityType QuantityType { get; private set; }

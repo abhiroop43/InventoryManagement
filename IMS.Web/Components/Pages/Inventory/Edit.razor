@@ -38,8 +38,8 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="quantityType" class="form-label">Type</label>
-                    <InputSelect TValue="QuantityType" id="quantityType" class="form-select form-select mb-3"
-                                 @bind-Value="Inventory.QuantityType">
+                    <InputSelect TValue="string" id="quantityType" class="form-select form-select mb-3"
+                                 @bind-Value="SelectedQuantityType">
                         <option value="" disabled>Please Select</option>
                         @foreach (var quant in _quantityTypes)
                         {
@@ -74,6 +74,8 @@ else
 
     [SupplyParameterFromForm] private InventoryDto? Inventory { get; set; }
 
+    private string SelectedQuantityType { get; set; } = "";
+
     protected override void OnInitialized()
     {
         GetQuantityTypes();
@@ -88,12 +90,13 @@ else
         {
             Inventory = await InventoriesClient.GetInventoryById(InventoryId.Value);
             Title = $"Edit Inventory {InventoryId.Value}";
-            Console.WriteLine(Inventory.QuantityType.ToString());
+            SelectedQuantityType = Inventory.QuantityType.ToString();
         }
         else
         {
             Inventory = new InventoryDto();
             Title = "Add New Inventory";
+            SelectedQuantityType = "";
         }
     }
 
@@ -105,6 +108,10 @@ else
     private async Task HandleSubmitAsync()
     {
         if (Inventory is null) return;
+
+        if (!Enum.TryParse(typeof(QuantityType), SelectedQuantityType, true, out var parseQuantityType)) return;
+
+        Inventory.QuantityType = (QuantityType)parseQuantityType;
 
         if (InventoryId is null)
         {
