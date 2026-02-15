@@ -5,7 +5,9 @@
 @inject NavigationManager NavigationManager
 
 @rendermode InteractiveServer
-@attribute [StreamRendering]
+@* @attribute [StreamRendering] *@
+
+<PageTitle>All Inventories</PageTitle>
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center">
@@ -25,46 +27,52 @@
     {
         <table class="table table-bordered table-striped table-responsive table-hover mt-5">
             <thead class="table-dark">
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Quantity
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Price
-                </th>
-                <th></th>
-            </tr>
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Quantity
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    <th></th>
+                </tr>
             </thead>
             <tbody>
-            @foreach (var inventory in _inventories)
-            {
-                <InventoryListItem Inventory="inventory"/>
-            }
+                @foreach (var inventory in _inventories)
+                {
+                    <InventoryListItem Inventory="inventory" OnParentReloadRequested="@ReloadParent" />
+                }
             </tbody>
         </table>
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
+                <li class="page-item @(_currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
                 @for (var i = 1; i <= _pagesCount; i++)
                 {
-                    <li class="page-item @(i == 1 ? "disabled" : "")">
-                        <a class="page-link" href="#" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <li class="page-item @(_currentPage == i ? "active" : "")"><a class="page-link" href="#">@i</a></li>
-                    <li class="page-item @(i == _pagesCount ? "disabled" : "")">
-                        <a class="page-link" href="#" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                }
 
+                    <li class="page-item @(_currentPage == i ? "active" : "")">
+                        <a class="page-link"
+                           @onclick="@(() => GetListData(_currentPage, _pageSize))">
+                            @i
+                        </a>
+                    </li>
+                    
+                }
+                <li class="page-item @(_currentPage == _pagesCount ? "disabled" : "")">
+                    <a class="page-link" href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
             </ul>
         </nav>
     }
@@ -88,7 +96,7 @@
         Console.WriteLine($"Fetching inventories for page {pageIndex + 1} with size {pageSize}");
         var result = await InventoriesClient.GetInventories(pageIndex, pageSize);
         _inventories = result.Items.ToArray();
-        _currentPage = result.PageIndex + 1;
+        _currentPage = result.PageIndex + 1; // FIXME
         _pageSize = result.PageSize;
         _totalRecords = result.Count;
         _pagesCount = (int)Math.Ceiling((double)_totalRecords / _pageSize);
@@ -97,6 +105,12 @@
     private void RedirectToForm()
     {
         NavigationManager.NavigateTo("/inventory/create");
+    }
+
+    private async Task ReloadParent()
+    {
+        await GetListData(_currentPage - 1, _pageSize);
+        StateHasChanged();
     }
 
 }

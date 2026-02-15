@@ -15,19 +15,6 @@ public static class DependencyInjection
         services.AddExceptionHandler<CustomExceptionHandler>();
         services.AddScoped<InventoriesClient>();
 
-        // services
-        //     .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-        //     .AddMicrosoftIdentityWebApp(msIdentityOptions =>
-        //     {
-        //         msIdentityOptions.CallbackPath = "/signin-oidc";
-        //         msIdentityOptions.Authority =
-        //             "https://abhiroopsantragmail.onmicrosoft.com.ciamlogin.com/fd8b1160-6283-419e-b032-bec26d815619/v2.0";
-        //         msIdentityOptions.ClientId = "c2ffbd0a-6bda-4f3c-9bbb-da550dc553e9";
-        //         msIdentityOptions.ResponseType = "code";
-        //     });
-        //
-        // services.AddAuthorization();
-
         services
             .AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftIdentityWebApp(configuration)
@@ -35,7 +22,7 @@ public static class DependencyInjection
             .AddInMemoryTokenCaches();
 
         services.AddCascadingAuthenticationState();
-
+        services.AddHttpContextAccessor();
         return services;
     }
 

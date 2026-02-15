@@ -2,8 +2,6 @@ namespace IMS.Core.Models;
 
 public class Inventory : Aggregate<InventoryId>
 {
-    private Inventory() { }
-
     public InventoryName ItemName { get; private set; } = null!;
     public decimal Quantity { get; private set; }
     public QuantityType QuantityType { get; private set; }
@@ -45,7 +43,12 @@ public class Inventory : Aggregate<InventoryId>
         return inventory;
     }
 
-    public void Update(decimal quantity, QuantityType quantityType, decimal price)
+    public void Update(
+        string inventoryName,
+        decimal quantity,
+        QuantityType quantityType,
+        decimal price
+    )
     {
         if (price <= 0)
             throw new DomainException("Price cannot be zero or negative");
@@ -53,9 +56,13 @@ public class Inventory : Aggregate<InventoryId>
         if (quantity <= 0)
             throw new DomainException("Quantity cannot be zero or negative");
 
+        if (string.IsNullOrWhiteSpace(inventoryName))
+            throw new DomainException("Inventory name cannot be null or whitespace");
+
         Quantity = quantity;
         QuantityType = quantityType;
         Price = price;
+        ItemName = InventoryName.Of(inventoryName);
 
         AddDomainEvent(
             new InventoryUpdatedEvent(Id.Value, ItemName.Value, Quantity, QuantityType, Price)

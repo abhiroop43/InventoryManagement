@@ -1,5 +1,7 @@
 ﻿@using System.Globalization
 @inject NavigationManager NavigationManager
+@inject InventoriesClient InventoriesClient
+
 <tr>
     <td>@Inventory.InventoryName</td>
     <td style="width: 10%">@Inventory.Quantity</td>
@@ -9,12 +11,48 @@
         <button type="button" class="btn btn-link" @onclick="() => NavigateToEditPage(Inventory.InventoryId)">
             <i class="bi bi-pencil-fill text-success"></i>
         </button>
-        <button class="btn btn-link"><i class="bi bi-trash3-fill text-danger"></i></button>
+        <button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#deleteModal-@Inventory.InventoryId">
+            <i class="bi bi-trash3-fill text-danger"></i>
+        </button>
     </td>
 </tr>
+
+<div class="modal fade" id="deleteModal-@Inventory.InventoryId" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog p-0">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteConfirmModalLabel">Please Confirm</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete @Inventory.InventoryName? This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="DeleteInventoryAsync">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @code {
     [Parameter] public required InventoryDto Inventory { get; set; }
 
-    private void NavigateToEditPage(Guid inventoryId) => NavigationManager.NavigateTo($"/inventory/edit/{inventoryId}");
+    [Parameter] public EventCallback OnParentReloadRequested { get; set; }
+
+    private void NavigateToEditPage(Guid inventoryId)
+    {
+        NavigationManager.NavigateTo($"/inventory/edit/{inventoryId}");
+    }
+
+    private async Task DeleteInventoryAsync()
+    {
+        await InventoriesClient.DeleteInventoryById(Inventory.InventoryId);
+        await OnParentReloadRequested.InvokeAsync();
+    }
+
 }
