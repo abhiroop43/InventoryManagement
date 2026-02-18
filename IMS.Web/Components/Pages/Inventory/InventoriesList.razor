@@ -25,6 +25,23 @@
     }
     else
     {
+        <EditForm Model="@SearchParams" Enhance OnValidSubmit="SearchSubmitAsync" FormName="SearchList">
+            <div class="row my-5">
+                <div class="col-md-6">
+                    <InputText DisplayName="Inventory Name" class="form-control" @bind-Value="SearchParams.InventoryName" />
+                </div>
+                <div class="col-md-2">
+                    <InputDate DisplayName="Created Date From" class="form-control" @bind-Value="SearchParams.CreatedDateFrom"></InputDate>
+                </div>
+                <div class="col-md-2">
+                    <InputDate DisplayName="Created Date To" class="form-control" @bind-Value="SearchParams.CreatedDateTo"></InputDate>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </EditForm>
+
         <table class="table table-bordered table-striped table-responsive table-hover mt-5">
             <thead class="table-dark">
                 <tr>
@@ -61,12 +78,17 @@
                 {
 
                     <li class="page-item @(_currentPage == i ? "active" : "")">
-                        <a class="page-link"
-                           @onclick="@(() => GetListData(_currentPage, _pageSize))">
+                        <a class="page-link" @onclick="@(() => GetListData(
+                                                            _currentPage, 
+                                                            _pageSize, 
+                                                            SearchParams?.InventoryName, 
+                                                            SearchParams?.CreatedDateFrom, 
+                                                            SearchParams?.CreatedDateTo
+                                                            ))">
                             @i
                         </a>
                     </li>
-                    
+
                 }
                 <li class="page-item @(_currentPage == _pagesCount ? "disabled" : "")">
                     <a class="page-link" href="#" aria-label="Next">
@@ -84,22 +106,38 @@
     private InventoryDto[]? _inventories;
     private int _currentPage = 1, _pageSize = 10;
     private long _pagesCount, _totalRecords;
+    [SupplyParameterFromForm] private SearchParams? SearchParams { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         await GetListData(_currentPage - 1, _pageSize);
+        SearchParams = new SearchParams();
         await base.OnInitializedAsync();
     }
 
-    private async Task GetListData(int pageIndex, int pageSize)
+    private async Task GetListData(int pageIndex, int pageSize, string? inventoryName = null, DateTime? createdDateFrom = null, DateTime? createdDateTo = null)
     {
         Console.WriteLine($"Fetching inventories for page {pageIndex + 1} with size {pageSize}");
-        var result = await InventoriesClient.GetInventories(pageIndex, pageSize);
+        var result = await InventoriesClient.GetInventories(pageIndex, pageSize, inventoryName, createdDateFrom, createdDateTo);
         _inventories = result.Items.ToArray();
         _currentPage = result.PageIndex + 1; // FIXME
         _pageSize = result.PageSize;
         _totalRecords = result.Count;
         _pagesCount = (int)Math.Ceiling((double)_totalRecords / _pageSize);
+    }
+
+    private async Task SearchSubmitAsync()
+    {
+        Console.WriteLine("Searching for the meaning of life....");
+        if(SearchParams is null) return;
+        await HandleSearchAsync(SearchParams.InventoryName, SearchParams.CreatedDateFrom, SearchParams.CreatedDateTo);
+    }
+
+    private async Task HandleSearchAsync(string? inventoryName = null, DateTime? createdDateFrom = null, DateTime? createdDateTo = null)
+    {
+        _currentPage = 1;
+        _pageSize = 10;
+        await GetListData(_currentPage - 1, _pageSize, inventoryName, createdDateFrom, createdDateTo);
     }
 
     private void RedirectToForm()
