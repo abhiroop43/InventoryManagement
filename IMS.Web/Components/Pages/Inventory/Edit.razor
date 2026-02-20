@@ -20,7 +20,7 @@ else
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-4">
-                <DataAnnotationsValidator/>
+                <DataAnnotationsValidator />
             </div>
             <div class="col-md-4"></div>
         </div>
@@ -29,12 +29,11 @@ else
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="inventoryName" class="form-label">Inventory Name</label>
-                    <InputText type="text" class="form-control" id="inventoryName"
-                               @bind-value="Inventory.InventoryName"/>
+                    <InputText type="text" class="form-control" id="inventoryName" @bind-value="Inventory.InventoryName" />
                 </div>
                 <div class="mb-3">
                     <label for="quantity" class="form-label">Quantity</label>
-                    <InputNumber class="form-control" id="quantity" @bind-value="Inventory.Quantity"/>
+                    <InputNumber class="form-control" id="quantity" @bind-value="Inventory.Quantity" />
                 </div>
                 <div class="mb-3">
                     <label for="quantityType" class="form-label">Type</label>
@@ -49,10 +48,10 @@ else
                 </div>
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>
-                    <InputNumber class="form-control" id="price" @bind-Value="Inventory.Price"/>
+                    <InputNumber class="form-control" id="price" @bind-Value="Inventory.Price" />
                 </div>
                 <div>
-                    <ValidationSummary/>
+                    <ValidationSummary />
                 </div>
             </div>
             <div class="col-md-4"></div>
