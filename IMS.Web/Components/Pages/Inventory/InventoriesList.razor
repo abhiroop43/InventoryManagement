@@ -79,7 +79,7 @@
 
                     <li class="page-item @(_currentPage == i ? "active" : "")">
                         <a class="page-link" @onclick="@(() => GetListData(
-                                                            _currentPage, 
+                                                           i - 1, 
                                                             _pageSize, 
                                                             SearchParams?.InventoryName, 
                                                             SearchParams?.CreatedDateFrom, 

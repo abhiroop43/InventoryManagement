@@ -5,9 +5,9 @@
 <tr>
     <td>@Inventory.InventoryName</td>
     <td style="width: 10%">@Inventory.Quantity</td>
-    <td style="width: 20%">@Inventory.QuantityType.ToString()</td>
-    <td style="width: 15%">$ @Inventory.Price.ToString(CultureInfo.InvariantCulture)</td>
-    <td style="width: 10%" class="text-center">
+    <td style="width: 15%">@Inventory.QuantityType.ToString()</td>
+    <td style="width: 10%">$ @Inventory.Price.ToString(CultureInfo.InvariantCulture)</td>
+    <td style="width: 15%" class="text-center">
         <button type="button" class="btn btn-link" @onclick="() => NavigateToEditPage(Inventory.InventoryId)">
             <i class="bi bi-pencil-fill text-success"></i>
         </button>
