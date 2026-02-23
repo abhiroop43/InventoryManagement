@@ -3,6 +3,7 @@
 
 @inject InventoriesClient InventoriesClient
 @inject NavigationManager NavigationManager
+@inject IHttpContextAccessor HttpContextAccessor
 
 @rendermode InteractiveServer
 @* @attribute [StreamRendering] *@
@@ -28,13 +29,16 @@
         <EditForm Model="@SearchParams" Enhance OnValidSubmit="SearchSubmitAsync" FormName="SearchList">
             <div class="row my-5">
                 <div class="col-md-6">
-                    <InputText DisplayName="Inventory Name" class="form-control" @bind-Value="SearchParams.InventoryName" />
+                    <InputText DisplayName="Inventory Name" class="form-control"
+                               @bind-Value="SearchParams.InventoryName"/>
                 </div>
                 <div class="col-md-2">
-                    <InputDate DisplayName="Created Date From" class="form-control" @bind-Value="SearchParams.CreatedDateFrom"></InputDate>
+                    <InputDate DisplayName="Created Date From" class="form-control"
+                               @bind-Value="SearchParams.CreatedDateFrom"></InputDate>
                 </div>
                 <div class="col-md-2">
-                    <InputDate DisplayName="Created Date To" class="form-control" @bind-Value="SearchParams.CreatedDateTo"></InputDate>
+                    <InputDate DisplayName="Created Date To" class="form-control"
+                               @bind-Value="SearchParams.CreatedDateTo"></InputDate>
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary">Search</button>
@@ -63,7 +67,7 @@
             <tbody>
             @foreach (var inventory in _inventories)
             {
-                <InventoryListItem Inventory="inventory" OnParentReloadRequested="@ReloadParent" />
+                <InventoryListItem Inventory="inventory" OnParentReloadRequested="@ReloadParent"/>
             }
             </tbody>
         </table>
@@ -72,9 +76,9 @@
                 <li class="page-item @(_currentPage == 1 ? "disabled" : "")">
                     <a class="page-link" aria-label="Previous" @onclick="@(() => GetListData(
                                                                              _currentPage - 2,
-                                                                             _pageSize, 
-                                                                             SearchParams?.InventoryName, 
-                                                                             SearchParams?.CreatedDateFrom, 
+                                                                             _pageSize,
+                                                                             SearchParams?.InventoryName,
+                                                                             SearchParams?.CreatedDateFrom,
                                                                              SearchParams?.CreatedDateTo
                                                                          ))">
                         <span aria-hidden="true">&laquo;</span>
@@ -85,23 +89,22 @@
                     var pageIndex = i;
                     <li class="page-item @(_currentPage == i ? "active" : "")">
                         <a class="page-link" @onclick="@(() => GetListData(
-                                                    pageIndex - 1,
-                                                           _pageSize, 
-                                                           SearchParams?.InventoryName, 
-                                                           SearchParams?.CreatedDateFrom, 
+                                                           pageIndex - 1,
+                                                           _pageSize,
+                                                           SearchParams?.InventoryName,
+                                                           SearchParams?.CreatedDateFrom,
                                                            SearchParams?.CreatedDateTo
-                                                                         ))">
-                    @i
+                                                       ))">
+                            @i
                         </a>
                     </li>
-
                 }
                 <li class="page-item @(_currentPage == _pagesCount ? "disabled" : "")">
                     <a class="page-link" aria-label="Next" @onclick="@(() => GetListData(
                                                                          _currentPage,
-                                                                         _pageSize, 
-                                                                         SearchParams?.InventoryName, 
-                                                                         SearchParams?.CreatedDateFrom, 
+                                                                         _pageSize,
+                                                                         SearchParams?.InventoryName,
+                                                                         SearchParams?.CreatedDateFrom,
                                                                          SearchParams?.CreatedDateTo
                                                                      ))">
                         <span aria-hidden="true">&raquo;</span>
@@ -112,22 +115,38 @@
     }
 </div>
 
+<div>
+    @_userFullName
+</div>
+<div>
+    @_preferredUsername
+</div>
+<div>
+    @_uid
+</div>
+
 @code {
     private InventoryDto[]? _inventories;
     private int _currentPage = 1, _pageSize = 10;
     private long _pagesCount, _totalRecords;
     [SupplyParameterFromForm] private SearchParams? SearchParams { get; set; }
 
+    private string? _userFullName, _preferredUsername, _uid;
+
     protected override async Task OnInitializedAsync()
     {
         await GetListData(_currentPage - 1, _pageSize);
         SearchParams = new SearchParams();
+        var claims = HttpContextAccessor?.HttpContext?.User?.Claims;
+        _userFullName = claims?.FirstOrDefault(c => c.Type == "name")?.Value;
+        _preferredUsername = HttpContextAccessor?.HttpContext?.User?.Identity?.Name; // claims?.FirstOrDefault(c => c.Type == "preferred_username")?.Value;
+        _uid = claims?.FirstOrDefault(c => c.Type == "uid")?.Value;
         await base.OnInitializedAsync();
     }
 
     private async Task GetListData(int pageIndex, int pageSize, string? inventoryName = null, DateTime? createdDateFrom = null, DateTime? createdDateTo = null)
     {
-        Console.WriteLine($"Fetching inventories for page {pageIndex+1} with size {pageSize}");
+        Console.WriteLine($"Fetching inventories for page {pageIndex + 1} with size {pageSize}");
         var result = await InventoriesClient.GetInventories(pageIndex, pageSize, inventoryName, createdDateFrom, createdDateTo);
         _inventories = result.Items.ToArray();
         _currentPage = result.PageIndex + 1; // FIXME
@@ -139,7 +158,7 @@
     private async Task SearchSubmitAsync()
     {
         Console.WriteLine("Searching for the meaning of life....");
-        if(SearchParams is null) return;
+        if (SearchParams is null) return;
         await HandleSearchAsync(SearchParams.InventoryName, SearchParams.CreatedDateFrom, SearchParams.CreatedDateTo);
     }
 
