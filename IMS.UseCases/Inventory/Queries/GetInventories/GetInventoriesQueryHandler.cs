@@ -15,10 +15,7 @@ public class GetInventoriesQueryHandler(IApplicationDbContext dbContext)
         var inventoryCountQuery = dbContext.Inventories.AsNoTracking();
 
         var inventories = dbContext
-            .Inventories.AsNoTracking()
-            .OrderByDescending(x => x.UpdatedDate)
-            .Skip(query.PaginationRequest.PageIndex * query.PaginationRequest.PageSize)
-            .Take(query.PaginationRequest.PageSize);
+            .Inventories.AsNoTracking();
 
         if (!string.IsNullOrEmpty(query.InventoryName))
         {
@@ -46,7 +43,10 @@ public class GetInventoriesQueryHandler(IApplicationDbContext dbContext)
             );
         }
 
-        var finalizedInventories = await inventories.ToListAsync(cancellationToken);
+        var finalizedInventories = await inventories
+            .OrderByDescending(x => x.UpdatedDate)
+            .Skip(query.PaginationRequest.PageIndex * query.PaginationRequest.PageSize)
+            .Take(query.PaginationRequest.PageSize).ToListAsync(cancellationToken);
 
         var totalInventory = await inventoryCountQuery.LongCountAsync(cancellationToken);
 

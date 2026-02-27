@@ -42,6 +42,7 @@
                 </div>
                 <div class="col-md-2">
                     <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="reset" class="btn btn-light" @onclick="ResetSearchAsync">Clear</button>
                 </div>
             </div>
         </EditForm>
@@ -153,6 +154,12 @@
         _pageSize = result.PageSize;
         _totalRecords = result.Count;
         _pagesCount = (int)Math.Ceiling((double)_totalRecords / _pageSize);
+    }
+
+    private async Task ResetSearchAsync()
+    {
+        SearchParams = new SearchParams();
+        await HandleSearchAsync();
     }
 
     private async Task SearchSubmitAsync()
