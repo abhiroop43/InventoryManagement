@@ -1,3 +1,5 @@
+using IMS.Core.Events.Inventory;
+
 namespace IMS.Core.Models;
 
 public class Inventory : Aggregate<InventoryId>

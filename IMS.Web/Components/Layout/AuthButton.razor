@@ -1,0 +1,37 @@
+﻿@implements IDisposable
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        <form name="logout-form" action="signout-oidc" method="post">
+            <AntiforgeryToken />
+            <input type="hidden" name="ReturnUrl" value="@_currentUrl" />
+            <button type="submit" class="nav-link">
+                <span class="bi bi-arrow-bar-left-nav-menu" aria-hidden="true"></span> Logout
+            </button>
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <a class="nav-link" href="login">
+            <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Login
+        </a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string? _currentUrl;
+
+    protected override void OnInitialized()
+    {
+        _currentUrl = Navigation.Uri;
+        Navigation.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        _currentUrl = Navigation.Uri;
+        StateHasChanged();
+    }
+
+    public void Dispose() => Navigation.LocationChanged -= OnLocationChanged;
+}
