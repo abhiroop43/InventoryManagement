@@ -9,12 +9,20 @@
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.2" />
-    <PackageReference
-      Include="Microsoft.Extensions.DependencyInjection.Abstractions"
-      Version="10.0.2"
-    />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IMS.Core\IMS.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ApplicationUser\Commands\AddApplicationUser\" />
+    <Folder Include="ApplicationUser\Commands\ActivateApplicationUser\" />
+    <Folder Include="ApplicationUser\Commands\DeactivateApplicationUser\" />
+    <Folder Include="ApplicationUser\Commands\AddRolesToUser\" />
+    <Folder Include="ApplicationUser\Commands\UpdateUserPreferences\" />
+    <Folder Include="ApplicationUser\Commands\RemoveRolesFromUser\" />
+    <Folder Include="ApplicationUser\Commands\UpdateApplicationUser\" />
+    <Folder Include="ApplicationUser\Queries\GetApplicationUsers\" />
+    <Folder Include="ApplicationUser\Queries\GetApplicationUserDetails\" />
   </ItemGroup>
 </Project>
