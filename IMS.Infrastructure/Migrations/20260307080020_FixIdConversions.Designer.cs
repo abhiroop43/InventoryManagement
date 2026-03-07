@@ -5,6 +5,7 @@ using IMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260307080020_FixIdConversions")]
+    partial class FixIdConversions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,6 +154,12 @@ namespace IMS.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ApplicationUserRoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -171,6 +180,10 @@ namespace IMS.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ApplicationUserRoleId");
+
                     b.HasIndex("RoleId");
 
                     b.HasIndex("UserId");
@@ -180,14 +193,22 @@ namespace IMS.Infrastructure.Migrations
 
             modelBuilder.Entity("IMS.Core.Models.UserRoleMapping", b =>
                 {
+                    b.HasOne("IMS.Core.Models.ApplicationUser", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("IMS.Core.Models.ApplicationUserRole", null)
                         .WithMany("UsersInRole")
+                        .HasForeignKey("ApplicationUserRoleId");
+
+                    b.HasOne("IMS.Core.Models.ApplicationUserRole", null)
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IMS.Core.Models.ApplicationUser", null)
-                        .WithMany("UserRoles")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

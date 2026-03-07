@@ -138,7 +138,7 @@
     {
         await GetListData(_currentPage - 1, _pageSize);
         SearchParams = new SearchParams();
-        var claims = HttpContextAccessor?.HttpContext?.User?.Claims;
+        var claims = HttpContextAccessor?.HttpContext?.User.Claims.ToList();
         _userFullName = claims?.FirstOrDefault(c => c.Type == "name")?.Value;
         _preferredUsername = HttpContextAccessor?.HttpContext?.User?.Identity?.Name; // claims?.FirstOrDefault(c => c.Type == "preferred_username")?.Value;
         _uid = claims?.FirstOrDefault(c => c.Type == "uid")?.Value;

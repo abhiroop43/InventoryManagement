@@ -5,6 +5,7 @@ using IMS.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -12,9 +13,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IMS.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260307070026_ApplicationUsersAndRoles")]
+    partial class ApplicationUsersAndRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,6 +79,9 @@ namespace IMS.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("ApplicationUserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -97,6 +103,8 @@ namespace IMS.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("ApplicationUserRoles", "ims");
                 });
@@ -146,61 +154,16 @@ namespace IMS.Infrastructure.Migrations
                     b.ToTable("Inventories", "ims");
                 });
 
-            modelBuilder.Entity("IMS.Core.Models.UserRoleMapping", b =>
+            modelBuilder.Entity("IMS.Core.Models.ApplicationUserRole", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRoleMappings", "ims");
-                });
-
-            modelBuilder.Entity("IMS.Core.Models.UserRoleMapping", b =>
-                {
-                    b.HasOne("IMS.Core.Models.ApplicationUserRole", null)
-                        .WithMany("UsersInRole")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("IMS.Core.Models.ApplicationUser", null)
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationUserId");
                 });
 
             modelBuilder.Entity("IMS.Core.Models.ApplicationUser", b =>
                 {
                     b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("IMS.Core.Models.ApplicationUserRole", b =>
-                {
-                    b.Navigation("UsersInRole");
                 });
 #pragma warning restore 612, 618
         }

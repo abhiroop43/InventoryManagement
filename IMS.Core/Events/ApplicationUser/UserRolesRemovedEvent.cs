@@ -2,7 +2,5 @@
 
 namespace IMS.Core.Events.ApplicationUser;
 
-public record UserRolesRemovedEvent(
-    ApplicationUserId UserId,
-    List<ApplicationUserRole> RemovedRoles
-) : DomainEvent;
+public record UserRolesRemovedEvent(ApplicationUserId UserId, List<string> RemovedRoles)
+    : DomainEvent;

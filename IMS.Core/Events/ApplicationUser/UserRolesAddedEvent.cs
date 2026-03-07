@@ -2,5 +2,4 @@
 
 namespace IMS.Core.Events.ApplicationUser;
 
-public record UserRolesAddedEvent(ApplicationUserId UserId, List<ApplicationUserRole> AddedRoles)
-    : DomainEvent;
+public record UserRolesAddedEvent(ApplicationUserId UserId, List<string> AddedRoles) : DomainEvent;

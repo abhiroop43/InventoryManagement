@@ -6,7 +6,8 @@ namespace IMS.UseCases.Data;
 public interface IApplicationDbContext
 {
     DbSet<Core.Models.Inventory> Inventories { get; }
-    DbSet<ApplicationUser> ApplicationUsers { get; }
+    DbSet<Core.Models.ApplicationUser> ApplicationUsers { get; }
+    DbSet<ApplicationUserRole> ApplicationUserRoles { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

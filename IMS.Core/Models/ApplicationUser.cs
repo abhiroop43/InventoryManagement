@@ -10,8 +10,8 @@ public class ApplicationUser : Aggregate<ApplicationUserId>
     public UserPreferences UserPreferences { get; private set; } = null!;
     public bool IsActive { get; set; } = true;
 
-    private readonly List<ApplicationUserRole> _roles = [];
-    public IReadOnlyList<ApplicationUserRole> UserRoles => _roles.AsReadOnly();
+    private readonly List<UserRoleMapping> _roles = [];
+    public IReadOnlyList<UserRoleMapping> UserRoles => _roles.AsReadOnly();
 
     public static ApplicationUser Create(
         ApplicationUserId userId,
@@ -61,15 +61,18 @@ public class ApplicationUser : Aggregate<ApplicationUserId>
         AddDomainEvent(new UserActivatedEvent(Id));
     }
 
-    public void AddUserToRoles(List<ApplicationUserRole> roles)
+    public void AddUserToRoles(List<UserRoleMapping> mappedRoles, List<string> roleCodes)
     {
-        _roles.AddRange(roles);
-        AddDomainEvent(new UserRolesAddedEvent(Id, roles));
+        _roles.AddRange(mappedRoles);
+        AddDomainEvent(new UserRolesAddedEvent(Id, roleCodes));
     }
 
-    public void RemoveUserFromRoles(List<ApplicationUserRole> rolesToRemove)
+    public void RemoveUserFromRoles(
+        List<UserRoleMapping> mappedRolesToRemove,
+        List<string> roleCodes
+    )
     {
-        foreach (var role in rolesToRemove)
+        foreach (var role in mappedRolesToRemove)
         {
             var roleExists = _roles.Contains(role);
 
@@ -82,6 +85,6 @@ public class ApplicationUser : Aggregate<ApplicationUserId>
                 throw new DomainException("Role does not exist for this user");
             }
         }
-        AddDomainEvent(new UserRolesRemovedEvent(Id, rolesToRemove));
+        AddDomainEvent(new UserRolesRemovedEvent(Id, roleCodes));
     }
 }

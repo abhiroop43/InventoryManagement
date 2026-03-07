@@ -31,6 +31,8 @@ public static class DatabaseExtensions
     private static async Task SeedAsync(ApplicationDbContext dbContext)
     {
         await SeedInventoriesAsync(dbContext);
+        await SeedApplicationUserRolesAsync(dbContext);
+        await SeedApplicationUsers(dbContext);
     }
 
     private static async Task SeedInventoriesAsync(ApplicationDbContext dbContext)
@@ -38,6 +40,24 @@ public static class DatabaseExtensions
         if (!await dbContext.Inventories.AnyAsync())
         {
             await dbContext.Inventories.AddRangeAsync(InitialData.Inventories);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedApplicationUserRolesAsync(ApplicationDbContext dbContext)
+    {
+        if (!await dbContext.ApplicationUserRoles.AnyAsync())
+        {
+            await dbContext.ApplicationUserRoles.AddRangeAsync(InitialData.ApplicationUserRoles);
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
+    private static async Task SeedApplicationUsers(ApplicationDbContext dbContext)
+    {
+        if (!await dbContext.ApplicationUsers.AnyAsync())
+        {
+            await dbContext.ApplicationUsers.AddRangeAsync(InitialData.ApplicationUsers);
             await dbContext.SaveChangesAsync();
         }
     }

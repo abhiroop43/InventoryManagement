@@ -30,4 +30,45 @@ public static class InitialData
                 30m
             ),
         };
+
+    public static IEnumerable<ApplicationUserRole> ApplicationUserRoles =>
+        new List<ApplicationUserRole>
+        {
+            new()
+            {
+                Id = ApplicationUserRoleId.Of(new Guid("96942573-933F-4DED-8552-9F3569CA8C6B")),
+                RoleCode = "ADMIN",
+                RoleName = "Administrator",
+            },
+        };
+
+    public static IEnumerable<ApplicationUser> ApplicationUsers
+    {
+        get
+        {
+            var genesisUser = ApplicationUser.Create(
+                ApplicationUserId.Of(new Guid("51DE1EB4-F545-4163-87FB-D2511BEF8F26")),
+                "abhiroop.santra@gmail.com",
+                "00000000-0000-0000-2805-6271ffcad78f",
+                "Abhiroop Santra"
+            );
+            genesisUser.AddUserToRoles(
+                [
+                    new UserRoleMapping
+                    {
+                        Id = UserRoleMappingId.Of(new Guid("B39209DD-11F5-4973-8EA7-A6C79164E215")),
+                        UserId = ApplicationUserId.Of(
+                            new Guid("51DE1EB4-F545-4163-87FB-D2511BEF8F26")
+                        ),
+                        RoleId = ApplicationUserRoleId.Of(
+                            new Guid("96942573-933F-4DED-8552-9F3569CA8C6B")
+                        ),
+                    },
+                ],
+                ["ADMIN"]
+            );
+
+            return new List<ApplicationUser> { genesisUser };
+        }
+    }
 }
