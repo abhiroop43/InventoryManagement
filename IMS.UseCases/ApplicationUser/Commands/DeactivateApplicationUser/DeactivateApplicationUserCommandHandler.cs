@@ -1,13 +1,29 @@
-﻿namespace IMS.UseCases.ApplicationUser.Commands.DeactivateApplicationUser;
+﻿using IMS.Core.ValueObjects;
+using IMS.UseCases.Data;
+using IMS.UseCases.Exceptions;
 
-public class DeactivateApplicationUserCommandHandler
+namespace IMS.UseCases.ApplicationUser.Commands.DeactivateApplicationUser;
+
+public class DeactivateApplicationUserCommandHandler(IApplicationDbContext dbContext)
     : ICommandHandler<DeactivateApplicationUserCommand, DeactivateApplicationUserResult>
 {
-    public Task<DeactivateApplicationUserResult> Handle(
-        DeactivateApplicationUserCommand request,
+    public async Task<DeactivateApplicationUserResult> Handle(
+        DeactivateApplicationUserCommand command,
         CancellationToken cancellationToken
     )
     {
-        throw new NotImplementedException();
+        var currentUser = await dbContext.ApplicationUsers.FindAsync(
+            [ApplicationUserId.Of(command.UserId)],
+            cancellationToken
+        );
+
+        if (currentUser == null)
+            throw new ApplicationUserNotFoundException(command.UserId);
+
+        currentUser.DeactivateUser();
+
+        var updateCount = await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new DeactivateApplicationUserResult(updateCount > 0);
     }
 }
