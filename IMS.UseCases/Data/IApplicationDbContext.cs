@@ -9,5 +9,7 @@ public interface IApplicationDbContext
     DbSet<Core.Models.ApplicationUser> ApplicationUsers { get; }
     DbSet<ApplicationUserRole> ApplicationUserRoles { get; }
 
+    DbSet<UserRoleMapping> UserRoleMappings { get; }
+
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }
